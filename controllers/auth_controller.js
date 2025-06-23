@@ -28,7 +28,7 @@ export const signup = async (req, res) => {
                 })
 
                 await User.findByIdAndUpdate(existingUser.id, {verificationCode: hashedCodeValue});
-                return res.status(201).json({ success: true, message: "verification code has been sent to your email", result });
+                return res.status(201).json({ success: true, message: "verification code has been sent to your email" });
             }
 
             return res.status(401).json({ success: false, message: "user already exist" });
