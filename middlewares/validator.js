@@ -15,11 +15,13 @@ export const signupSchema = Joi.object({
 
     password: Joi.string()
                 .required()
-                .pattern(new RegExp('^[a-zA-Z0-9](?=.*\d).{7,}$')),
+                .min(8)
+                .max(50),
 
     confirmPassword: Joi.string()
                 .required()
-                .pattern(new RegExp('^[a-zA-Z0-9](?=.*\d).{7,}$')),
+                .min(8)
+                .max(50),
     
     role: Joi.string().valid('buyer', 'vendor').required(),
 
