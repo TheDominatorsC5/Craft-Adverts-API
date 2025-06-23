@@ -27,7 +27,7 @@ export const signup = async (req, res) => {
                     html: '<h1>' + codeValue + '</h1>'
                 })
 
-                await User.findOneAndUpdate(email, {verificationCode: hashedCodeValue});
+                await User.findByIdAndUpdate(existingUser.id, {verificationCode: hashedCodeValue});
                 return res.status(201).json({ success: true, message: "verification code has been sent to your email", result });
             }
 
