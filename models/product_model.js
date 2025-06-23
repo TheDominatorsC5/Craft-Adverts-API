@@ -12,6 +12,7 @@ const productSchema = new Schema({
     },
     category: {
         type: String,
+        enum: ['Arts & Paintings', 'Accessories', 'Home Deco', 'Pottery', 'Textiles', 'Wooden Pieces'],
         required: true
     },
     price: {
@@ -29,18 +30,9 @@ const productSchema = new Schema({
     },
     images: {
         type: [
-            {
-            url: {
-            type: String,
-            required: true
-            },
-            public_id: {
-            type: String,
-            required: true
-            }
-            }
+            
         ],
-        required: true
+       
     }
 });
 

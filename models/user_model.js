@@ -1,6 +1,8 @@
 import { Schema, model } from "mongoose";
 import normalize from "normalize-mongoose"
 
+// shopName, shopAddress, contact
+
 const userSchema = new Schema({
     firstName: {
         type: String,
@@ -24,8 +26,12 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['buyer', 'vendor']
+        enum: ['buyer', 'vendor'],
+        required: true
     },
+    shopName: String,
+    shopAddress: String,
+    contact: String,
     verified: {
         type: Boolean,
         default: false
@@ -38,7 +44,7 @@ const userSchema = new Schema({
         type: Number,
         select: false
     },
-});
+}, {timestamps: true});
 
 userSchema.plugin(normalize);
 

@@ -9,4 +9,4 @@ authRouter.post('/signin', signin);
 authRouter.post('/signout', identifier, signout);
 authRouter.post('/verifyuser', verifyUser);
 authRouter.post('/reset/password', resetPassword);
-authRouter.post('/delete/account', identifier, deleteAccount);
+authRouter.delete('/account/delete', identifier, deleteAccount);

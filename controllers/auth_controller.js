@@ -5,10 +5,10 @@ import { hashPass, hashValidation, hmacProcess } from "../utils/hashing.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
-    const { firstName, lastName, email, password, confirmPassword, role } = req.body;
+    const { firstName, lastName, email, password, confirmPassword, role, shopName, shopAddress, contact } = req.body;
 
     try {
-        const { error, value } = signupSchema.validate({ firstName, lastName, email, password, confirmPassword, role });
+        const { error, value } = signupSchema.validate({ firstName, lastName, email, password, confirmPassword, role, shopName, shopAddress, contact });
 
         if (error) {
             return res.status(401).json({ success: false, message: error.details[0].message });
@@ -36,15 +36,32 @@ export const signup = async (req, res) => {
         })
 
         if (info.accepted[0] === email) {
-            const newUser = new User({
-                firstName,
-                lastName,
-                email,
-                password: hashedPassword,
-                role,
-                verificationCode: hashedCodeValue,
-                verificationCodeValidation: Date.now()
-            });
+            let newUser
+
+            if (role === 'buyer') {
+                newUser = new User({
+                    firstName,
+                    lastName,
+                    email,
+                    password: hashedPassword,
+                    role,
+                    verificationCode: hashedCodeValue,
+                    verificationCodeValidation: Date.now()
+                });
+            } else {
+                newUser = new User({
+                    firstName,
+                    lastName,
+                    email,
+                    password: hashedPassword,
+                    role,
+                    shopName,
+                    shopAddress,
+                    contact,
+                    verificationCode: hashedCodeValue,
+                    verificationCodeValidation: Date.now()
+                });
+            }
 
             const result = await newUser.save();
             result.password = undefined;
@@ -266,7 +283,7 @@ export const deleteAccount = async (req, res) => {
         }
 
         const deletedUser = await User.findOneAndDelete({email})
-        return res.status(201).json({ success: true, message: 'account deleted successfully', deletedUser });
+        return res.status(201).clearCookie('Authorization').json({ success: true, message: 'account deleted successfully', deletedUser });
         
     } catch (error) {
         res.status(400).json({success: false, message: error.message });

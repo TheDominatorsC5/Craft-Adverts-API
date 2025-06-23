@@ -35,15 +35,26 @@ export const getSingleProduct = async (req, res) => {
 
 export const postProduct = async (req, res) => {
     try {
-        const { productName, category, price, description, images } = req.body;
+        
+        const { productName, category, price, description } = req.body;
     
-        const { error, value } = productSchema.validate({ productName, category, price, description, images });
+        const { error, value } = productSchema.validate({ productName, category, price, description });
     
         if (error) {
             return res
                 .status(401)
                 .json({ success: false, message: error.details[0].message });
         }
+      
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ success: false, message: 'no images uploaded.' });
+        }
+
+        const uploaded = req.files.map(file => ({
+            url: file.path,
+            id: file.filename
+        }));
     
         const product = new Product({
             vendorId: req.user.userId,
@@ -51,11 +62,11 @@ export const postProduct = async (req, res) => {
             category,
             price,
             description,
-            images
+            images: uploaded
         })
     
         const newProduct = await product.save();
-        res.status(201).json({success: true, message: 'product added', product});
+        res.status(201).json({success: true, message: 'product created', product: newProduct});
 
     } catch (error) {
         res.status(400).json({success:false, message:error.message});
@@ -65,12 +76,12 @@ export const postProduct = async (req, res) => {
 export const postImage = async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ success: false, message: 'No files uploaded.' });
+            return res.status(400).json({ success: false, message: 'No images uploaded.' });
         }
 
         const uploaded = req.files.map(file => ({
             url: file.path,
-            public_id: file.filename
+            id: file.filename
         }));
 
         return res.status(200).json({ success: true, images: uploaded });
@@ -101,7 +112,21 @@ export const updateProduct = async (req, res) => {
             return;
         }
 
-        await Product.findByIdAndUpdate(productId, value);
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ success: false, message: 'no images uploaded.' });
+        }
+
+        const uploaded = req.files.map(file => ({
+            url: file.path,
+            id: file.filename
+        }));
+
+        const edittedProduct = {
+            ...value,
+            images: uploaded
+        }
+
+        await Product.findByIdAndUpdate(productId, edittedProduct);
 
         res.status(200).json({success: true, message: 'product updated'});
         
@@ -179,9 +204,21 @@ export const getProductsByTitle = async (req, res) => {
 
 export const getProductsByPrice = async (req, res) => {
     try {
-        const { price } = req.params;
+        const { productName, price, category } = req.query;
 
-        const products = await Product.find({price});
+        let query = {};
+
+        if (productName) {
+            query.productName = productName
+        }
+        else if (price) {
+            query.price = price
+        }
+        else if (category) {
+            query.category = category
+        }
+
+        const products = await Product.find(query);
         if (products.length <= 0) {
             res.status(400).json({success: false, message: "product not found"});
             return;
