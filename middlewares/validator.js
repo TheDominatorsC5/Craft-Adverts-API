@@ -54,7 +54,8 @@ export const signinSchema = Joi.object({
              }),
     password: Joi.string()
                 .required()
-                .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$'))
+                .min(8)
+                .max(50),
 });
 
 export const passwordResetSchema = Joi.object({
@@ -68,11 +69,13 @@ export const passwordResetSchema = Joi.object({
 
     newPassword: Joi.string()
                 .required()
-                .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$')),
+                .min(8)
+                .max(50),
 
     confirmPassword: Joi.string()
                 .required()
-                .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$')),
+                .min(8)
+                .max(50),
 });
 
 export const acceptCodeSchema = Joi.object({
