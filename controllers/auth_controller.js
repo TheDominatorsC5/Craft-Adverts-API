@@ -16,6 +16,21 @@ export const signup = async (req, res) => {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
+            if (!existingUser.verified) {
+                const codeValue = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+                const hashedCodeValue = hmacProcess(codeValue, process.env.HMAC_VERIFICATION_CODE_SECRET);
+
+                await transport.sendMail({
+                    from: process.env.SENDER_EMAIL_ADDRESS,
+                    to: email,
+                    subject: "Activation Code",
+                    html: '<h1>' + codeValue + '</h1>'
+                })
+
+                await User.findOneAndUpdate(email, {verificationCode: hashedCodeValue});
+                return res.status(201).json({ success: true, message: "verification code has been sent to your email", result });
+            }
+
             return res.status(401).json({ success: false, message: "user already exist" });
         }
 
@@ -24,8 +39,7 @@ export const signup = async (req, res) => {
         }
 
         const hashedPassword = await hashPass(password, 12);
-
-        const codeValue = Math.floor(Math.random() * 1000000).toString();
+        const codeValue = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
         const hashedCodeValue = hmacProcess(codeValue, process.env.HMAC_VERIFICATION_CODE_SECRET);
 
         let info = await transport.sendMail({
@@ -112,7 +126,7 @@ export const verifyUser = async (req, res) => {
         if (Date.now() - existingUser.verificationCodeValidation > 5 * 60 * 1000) {
             return res
                 .status(400)
-                .json({ success: false, message: 'code has been expired ' })
+                .json({ success: false, message: 'code has expired ' })
         }
 
         const hashedCodeValue = hmacProcess(codeValue, process.env.HMAC_VERIFICATION_CODE_SECRET)
