@@ -19,6 +19,9 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
+    quantity: {
+        type: Number,
+    },
     description: {
         type: String,
         required: true

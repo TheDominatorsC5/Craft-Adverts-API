@@ -36,9 +36,9 @@ export const getSingleProduct = async (req, res) => {
 export const postProduct = async (req, res) => {
     try {
         
-        const { productName, category, price, description } = req.body;
+        const { productName, category, price, description, quantity } = req.body;
     
-        const { error, value } = productSchema.validate({ productName, category, price, description });
+        const { error, value } = productSchema.validate({ productName, category, price, description, quantity });
     
         if (error) {
             return res
@@ -61,6 +61,7 @@ export const postProduct = async (req, res) => {
             productName,
             category,
             price,
+            quantity,
             description,
             images: uploaded
         })

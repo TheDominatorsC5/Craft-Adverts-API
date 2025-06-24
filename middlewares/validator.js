@@ -98,6 +98,7 @@ export const productSchema = Joi.object({
     productName: Joi.string().required(),
     category: Joi.string().required().valid('Arts & Paintings', 'Accessories', 'Home Deco', 'Pottery', 'Textiles', 'Wooden Pieces'),
     price: Joi.number().required(),
+    quantity: Joi.number(),
     description: Joi.string().required(),
     images: Joi.array().min(1)
 });
