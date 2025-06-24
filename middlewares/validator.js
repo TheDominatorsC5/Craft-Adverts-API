@@ -23,8 +23,6 @@ export const signupSchema = Joi.object({
                 .min(8)
                 .max(50),
     
-    role: Joi.string().valid('buyer', 'vendor').required(),
-
     shopName: Joi.string().when('role', {
         is: 'vendor',
         then: Joi.required(),

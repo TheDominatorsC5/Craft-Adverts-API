@@ -5,10 +5,10 @@ import { hashPass, hashValidation, hmacProcess } from "../utils/hashing.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
-    const { firstName, lastName, email, password, confirmPassword, role, shopName, shopAddress, contact } = req.body;
+    const { firstName, lastName, email, password, confirmPassword, shopName, shopAddress, contact } = req.body;
 
     try {
-        const { error, value } = signupSchema.validate({ firstName, lastName, email, password, confirmPassword, role, shopName, shopAddress, contact });
+        const { error, value } = signupSchema.validate({ firstName, lastName, email, password, confirmPassword, shopName, shopAddress, contact });
 
         if (error) {
             return res.status(401).json({ success: false, message: error.details[0].message });
@@ -50,7 +50,13 @@ export const signup = async (req, res) => {
         })
 
         if (info.accepted[0] === email) {
-            let newUser
+            let newUser, role;
+
+            if (!shopName && !shopAddress && !contact) {
+                role = 'buyer';
+            } else {
+                role = 'vendor';
+            }
 
             if (role === 'buyer') {
                 newUser = new User({
@@ -76,7 +82,7 @@ export const signup = async (req, res) => {
                     verificationCodeValidation: Date.now()
                 });
             }
-
+            
             const result = await newUser.save();
             result.password = undefined;
             result.verificationCode = undefined;
