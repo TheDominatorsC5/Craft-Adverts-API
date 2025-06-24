@@ -162,7 +162,7 @@ export const deleteProduct = async (req, res) => {
 export const getAllProducts = async (req, res) => {
     try {
         const allProduct = await Product.find();
-        res.status(200).json({'all product': allProduct});
+        res.status(200).json({success: true, products: allProduct});
     } catch (error) {
         return res.status(400).json({success: false, message:error.message});
     }

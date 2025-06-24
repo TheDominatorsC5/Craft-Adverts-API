@@ -297,7 +297,7 @@ export const deleteAccount = async (req, res) => {
         }
 
         const deletedUser = await User.findOneAndDelete({email})
-        return res.status(201).clearCookie('Authorization').json({ success: true, message: 'account deleted successfully', deletedUser });
+        return res.status(200).clearCookie('Authorization').json({ success: true, message: 'account deleted successfully', deletedUser });
         
     } catch (error) {
         res.status(400).json({success: false, message: error.message });
