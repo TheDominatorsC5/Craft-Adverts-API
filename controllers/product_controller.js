@@ -3,49 +3,49 @@ import { Product } from "../models/product_model.js";
 
 export const getVendorProducts = async (req, res) => {
     try {
-        const { vendorId } = req.params;
+        const { userId } = req.user;
 
-        const allProducts = await Product.find({vendorId});
-        
+        const allProducts = await Product.find({ vendorId: userId });
+
         if (allProducts.length <= 0) {
             return res.status(401).json({ success: false, message: 'no product found' });
-        }  
-        
+        }
+
         res.status(200).json(allProducts);
-        
+
     } catch (error) {
-        res.status(400).json({success:false, message:error.message});
+        res.status(400).json({ success: false, message: error.message });
     }
 }
 
 export const getSingleProduct = async (req, res) => {
     try {
-        const {productId} = req.params;
-    
+        const { productId } = req.params;
+
         const foundProduct = await Product.findById(productId);
         if (!foundProduct) {
-            return res.status(400).json({success: false, message: 'product not found'});
+            return res.status(400).json({ success: false, message: 'product not found' });
         }
-    
-        res.status(200).json({success: true, product: foundProduct});
+
+        res.status(200).json({ success: true, product: foundProduct });
     } catch (error) {
-        return res.status(400).json({success: false, message: 'product not found'});
+        return res.status(400).json({ success: false, message: 'product not found' });
     }
 }
 
 export const postProduct = async (req, res) => {
     try {
-        
+
         const { productName, category, price, description, quantity } = req.body;
-    
+
         const { error, value } = productSchema.validate({ productName, category, price, description, quantity });
-    
+
         if (error) {
             return res
                 .status(401)
                 .json({ success: false, message: error.details[0].message });
         }
-      
+
 
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ success: false, message: 'no images uploaded.' });
@@ -55,7 +55,7 @@ export const postProduct = async (req, res) => {
             url: file.path,
             id: file.filename
         }));
-    
+
         const product = new Product({
             vendorId: req.user.userId,
             productName,
@@ -65,12 +65,12 @@ export const postProduct = async (req, res) => {
             description,
             images: uploaded
         })
-    
+
         const newProduct = await product.save();
-        res.status(201).json({success: true, message: 'product created', product: newProduct});
+        res.status(201).json({ success: true, message: 'product created', product: newProduct });
 
     } catch (error) {
-        res.status(400).json({success:false, message:error.message});
+        res.status(400).json({ success: false, message: error.message });
     }
 }
 
@@ -86,9 +86,9 @@ export const postImage = async (req, res) => {
         }));
 
         return res.status(200).json({ success: true, images: uploaded });
-        
+
     } catch (error) {
-        res.status(400).json({success:false, message:error.message});
+        res.status(400).json({ success: false, message: error.message });
     }
 }
 
@@ -100,16 +100,16 @@ export const updateProduct = async (req, res) => {
         const { error, value } = updateProductSchema.validate(req.body);
 
         if (error) {
-            return res.status(400).json({error: error.details[0].message});
+            return res.status(400).json({ error: error.details[0].message });
         }
 
         const foundProduct = await Product.findById(productId);
         if (!foundProduct) {
-            return res.status(401).json({success: false, message: "product not found"});
+            return res.status(401).json({ success: false, message: "product not found" });
         }
-        
-        if(String(foundProduct.vendorId) !== vendorId) {
-            res.status(401).json({success: false, message: "unauthorized"});
+
+        if (String(foundProduct.vendorId) !== vendorId) {
+            res.status(401).json({ success: false, message: "unauthorized" });
             return;
         }
 
@@ -129,10 +129,10 @@ export const updateProduct = async (req, res) => {
 
         await Product.findByIdAndUpdate(productId, edittedProduct);
 
-        res.status(200).json({success: true, message: 'product updated'});
-        
+        res.status(200).json({ success: true, message: 'product updated' });
+
     } catch (error) {
-        return res.status(400).json({success:false, message:error.message});
+        return res.status(400).json({ success: false, message: error.message });
     }
 }
 
@@ -140,32 +140,32 @@ export const deleteProduct = async (req, res) => {
     try {
         const { productId } = req.params;
         const vendorId = req.user.userId
-        
+
         const foundProduct = await Product.findById(productId);
         if (!foundProduct) {
-            return res.status(401).json({success: false, message: "product not found"});
+            return res.status(401).json({ success: false, message: "product not found" });
         }
 
-        if(String(foundProduct.vendorId) !== vendorId) {
-            res.status(401).json({success: false, message: "unauthorized"});
+        if (String(foundProduct.vendorId) !== vendorId) {
+            res.status(401).json({ success: false, message: "unauthorized" });
             return;
         }
 
         await Product.findByIdAndDelete(productId);
 
-        res.status(200).json({success: true, message: 'product deleted'});
-        
+        res.status(200).json({ success: true, message: 'product deleted' });
+
     } catch (error) {
-        return res.status(400).json({success: false, message:error.message});
+        return res.status(400).json({ success: false, message: error.message });
     }
 }
 
 export const getAllProducts = async (req, res) => {
     try {
         const allProduct = await Product.find();
-        res.status(200).json({success: true, products: allProduct});
+        res.status(200).json({ success: true, products: allProduct });
     } catch (error) {
-        return res.status(400).json({success: false, message:error.message});
+        return res.status(400).json({ success: false, message: error.message });
     }
 }
 
@@ -173,16 +173,16 @@ export const getProductsByCategory = async (req, res) => {
     try {
         const { category } = req.params;
 
-        const products = await Product.find({category});
+        const products = await Product.find({ category });
         if (products.length <= 0) {
-            res.status(400).json({success: false, message: "category not found"});
+            res.status(400).json({ success: false, message: "category not found" });
             return;
         }
 
-        res.status(201).json({'products': products});
+        res.status(201).json({ 'products': products });
 
     } catch (error) {
-        return res.status(400).json({success: false, message:error.message});
+        return res.status(400).json({ success: false, message: error.message });
     }
 }
 
@@ -190,16 +190,16 @@ export const getProductsByTitle = async (req, res) => {
     try {
         const productName = req.params.title;
 
-        const products = await Product.find({productName});
+        const products = await Product.find({ productName });
         if (products.length <= 0) {
-            res.status(400).json({success: false, message: "product not found"});
+            res.status(400).json({ success: false, message: "product not found" });
             return;
         }
 
-        res.status(201).json({'products': products});
+        res.status(201).json({ 'products': products });
 
     } catch (error) {
-        return res.status(400).json({success: false, message: error.message});
+        return res.status(400).json({ success: false, message: error.message });
     }
 }
 
@@ -221,13 +221,13 @@ export const getProductsByPrice = async (req, res) => {
 
         const products = await Product.find(query);
         if (products.length <= 0) {
-            res.status(400).json({success: false, message: "product not found"});
+            res.status(400).json({ success: false, message: "product not found" });
             return;
         }
 
-        res.status(201).json({'products': products});
+        res.status(201).json({ 'products': products });
 
     } catch (error) {
-        return res.status(400).json({success: false, message: error.message});
+        return res.status(400).json({ success: false, message: error.message });
     }
 }
