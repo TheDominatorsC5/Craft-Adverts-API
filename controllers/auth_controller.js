@@ -206,9 +206,10 @@ export const signin = async (req, res) => {
                 secure: process.env.NODE_ENV === 'production'
             }
         )
-            .status(201).json({
+            .status(200).json({
                 success: true,
                 token,
+                username: existingUser.firstName,
                 message: 'Logged in successfully'
             })
 
