@@ -7,7 +7,7 @@ export const productRouter = Router();
 
 productRouter.get('/', identifier, getAllProducts);
 // productRouter.get('/:category', identifier, getProductsByCategory);
-productRouter.get('/product/:productId', identifier, getSingleProduct);
+productRouter.get('/product/:productId', getSingleProduct);
 // productRouter.get('/filter-title/:title', identifier, getProductsByTitle);
 productRouter.get('/search', getProductsByPrice);
 productRouter.get('/vendor/:vendorId', identifier, getVendorProducts);
