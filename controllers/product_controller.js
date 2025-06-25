@@ -127,9 +127,9 @@ export const updateProduct = async (req, res) => {
             images: uploaded
         }
 
-        await Product.findByIdAndUpdate(productId, edittedProduct);
+        const updatedProduct =  await Product.findByIdAndUpdate(productId, edittedProduct);
 
-        res.status(200).json({ success: true, message: 'product updated' });
+        res.status(200).json({ success: true,  product: updatedProduct, message: 'product updated' });
 
     } catch (error) {
         return res.status(400).json({ success: false, message: error.message });
