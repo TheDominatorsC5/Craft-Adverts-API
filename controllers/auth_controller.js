@@ -210,6 +210,7 @@ export const signin = async (req, res) => {
                 success: true,
                 token,
                 username: existingUser.firstName,
+                role: existingUser.role,
                 message: 'Logged in successfully'
             })
 
