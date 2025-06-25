@@ -5,7 +5,7 @@ import { upload } from "../middlewares/uploadImages.js";
 
 export const productRouter = Router();
 
-productRouter.get('/', identifier, getAllProducts);
+productRouter.get('/', getAllProducts);
 // productRouter.get('/:category', identifier, getProductsByCategory);
 productRouter.get('/product/:productId', getSingleProduct);
 // productRouter.get('/filter-title/:title', identifier, getProductsByTitle);
