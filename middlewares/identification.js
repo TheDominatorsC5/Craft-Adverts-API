@@ -2,16 +2,10 @@ import jwt from "jsonwebtoken"
 
 export const identifier = async (req, res, next) => {
     try {
-        let token;
-    
-        if (req.headers.client === 'not-browser') {
-            token = req.headers.authorization
-        } else {
-            token = req.cookies['Authorization']
-        }
+        const token = req.headers.authorization;
     
         if (!token) {
-            return res.status(403).json({success: false, message: 'authentication not found'})
+            return res.status(401).json({success: false, message: 'authentication not found'})
         }
         
         const userToken = token.split(' ')[1];

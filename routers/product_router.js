@@ -9,7 +9,7 @@ productRouter.get('/', identifier, getAllProducts);
 // productRouter.get('/:category', identifier, getProductsByCategory);
 productRouter.get('/product/:productId', identifier, getSingleProduct);
 // productRouter.get('/filter-title/:title', identifier, getProductsByTitle);
-productRouter.get('/search', identifier, getProductsByPrice);
+productRouter.get('/search', getProductsByPrice);
 productRouter.get('/vendor/:vendorId', identifier, getVendorProducts);
 productRouter.post('/create', identifier, upload.array('image', 5),  postProduct);
 productRouter.patch('/edit/:productId', identifier, upload.array('image', 5), updateProduct);
