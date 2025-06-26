@@ -113,18 +113,18 @@ export const updateProduct = async (req, res) => {
             return;
         }
 
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ success: false, message: 'no images uploaded.' });
-        }
+        // if (!req.files || req.files.length === 0) {
+        //     return res.status(400).json({ success: false, message: 'no images uploaded.' });
+        // }
 
-        const uploaded = req.files.map(file => ({
-            url: file.path,
-            id: file.filename
-        }));
+        // const uploaded = req.files.map(file => ({
+        //     url: file.path,
+        //     id: file.filename
+        // }));
 
         const edittedProduct = {
             ...value,
-            images: uploaded
+            // images: uploaded
         }
 
         await Product.findByIdAndUpdate(productId, edittedProduct);
