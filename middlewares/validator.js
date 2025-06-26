@@ -105,7 +105,7 @@ export const updateProductSchema = Joi.object({
     productName: Joi.string(),
     category: Joi.string().valid('Arts & Paintings', 'Accessories', 'Home Deco', 'Pottery', 'Textiles', 'Wooden Pieces'),
     price: Joi.number(),
+    quantity: Joi.number(),
     description: Joi.string(),
-    status: Joi.string().valid('available', 'unavailable'),
     images: Joi.array().items(imageSchema).min(1)
 });
