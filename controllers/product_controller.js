@@ -127,7 +127,8 @@ export const updateProduct = async (req, res) => {
             images: uploaded
         }
 
-        const updatedProduct =  await Product.findByIdAndUpdate(productId, edittedProduct);
+        await Product.findByIdAndUpdate(productId, edittedProduct);
+        const updatedProduct = await Product.findById(productId);
 
         res.status(200).json({ success: true,  product: updatedProduct, message: 'product updated' });
 
