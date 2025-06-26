@@ -153,7 +153,7 @@ export const deleteProduct = async (req, res) => {
         }
 
         await Product.findByIdAndDelete(productId);
-
+        
         res.status(200).json({ success: true, message: 'product deleted' });
 
     } catch (error) {

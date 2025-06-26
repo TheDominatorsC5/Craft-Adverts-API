@@ -107,5 +107,5 @@ export const updateProductSchema = Joi.object({
     price: Joi.number(),
     quantity: Joi.number(),
     description: Joi.string(),
-    images: Joi.array().items(imageSchema).min(1)
+    // images: Joi.array().items(imageSchema).min(1)
 });
